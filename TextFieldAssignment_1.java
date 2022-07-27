@@ -25,7 +25,7 @@ TextFieldAssignment_1(){
      p.setBackground(Color.orange);
 
     p1.setLayout(new FlowLayout());
-
+    p1.setBackground(Color.gray);
     p1.add(B1,"Center");
     p1.add(B2,"Center");
     p1.add(B3,"Center");
