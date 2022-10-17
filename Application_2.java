@@ -51,7 +51,6 @@ public class Application_2 extends JFrame implements ActionListener {
     JTextField JF7=new JTextField(15);
     JTextField JF8=new JTextField(15);
     JTextField JF9=new JTextField(15);
-    JTextField JF10=new JTextField(15);
     JTextField JF11=new JTextField(15);
 
     Connection Conn;
@@ -97,8 +96,6 @@ public class Application_2 extends JFrame implements ActionListener {
         Inaction.add(new JLabel("Rate",4));
         Inaction.add(JF3);
 
-        Inaction.add(new JLabel("C_SqFeet",4));
-        Inaction.add(JF10);
 
         Inaction.add(new JLabel("C_Rate",4));
         Inaction.add(JF4);
@@ -128,14 +125,15 @@ public class Application_2 extends JFrame implements ActionListener {
 
         P6.add(SP2,"Center");
 
-         P7.add(B3);
-         P7.add(B4);
-         P8.add(B5);
+        P7.add(B3);
+        P7.add(B4);
+        P8.add(B5);
         P9.add(SP,"Center");
         P9.add(P10,"South");
 
         P4.setLayout(C);
         Avl.add(SP3);
+
         //create the cards on p4 Panel.
 
         P4.add("Card_1",P5);
@@ -154,18 +152,20 @@ public class Application_2 extends JFrame implements ActionListener {
 
         TP.addTab("Purchase",P1);
         add(TP);
+
 //Database connection and Showing tables for the list Component
+
         try{
-           Class.forName("com.mysql.cj.jdbc.Driver") ;
+            Class.forName("com.mysql.cj.jdbc.Driver") ;
             System.out.println("Driver Resister.....");
-            Conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/furniture",
+            Conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/furniture1",
                     "Punam","punam_mistari");
             stat=Conn.createStatement();
             ResultSet Set2=stat.executeQuery(SQL);
-           // System.out.println(SQL);
+            // System.out.println(SQL);
             while(Set2.next()){
-           String Ss=Set2.getString(1);
-               L1.add(Ss);
+                String Ss=Set2.getString(1);
+                L1.add(Ss);
             }
         }
         catch(Exception e){
@@ -181,10 +181,10 @@ public class Application_2 extends JFrame implements ActionListener {
 
                 //Insertion of items into the Tables
 
-               String InSql="Insert into "+JF1.getText()+" values('"+JF9.getText()+"','"+JF2.getText()+"','"+JF7.getText()+"',"+JF8.getText()+","+JF3.getText()+","+JF10.getText()+","+JF4.getText()+","+JF5.getText()+","+JF6.getText()+");";
-                String InItems="Insert into available_stock values ('"+JF2.getText()+"','"+JF7.getText()+"',"+JF10.getText()+","+JF4.getText()+");";
-              //  System.out.println(InItems);
-               // System.out.println(InSql);
+                String InSql="Insert into "+JF1.getText()+" values('"+JF9.getText()+"','"+JF2.getText()+"','"+JF7.getText()+"','"+JF8.getText()+"',"+JF3.getText()+","+JF4.getText()+","+JF5.getText()+","+JF6.getText()+");";
+                String InItems="Insert into available_stock values ('"+JF2.getText()+"',"+JF5.getText()+",'"+JF7.getText()+"',"+JF4.getText()+");";
+//                System.out.println(InItems);
+//               System.out.println(InSql);
 
                 try {
                     stat.execute(InSql);
@@ -200,6 +200,7 @@ public class Application_2 extends JFrame implements ActionListener {
                     JF8.setText("");
 
                 } catch (Exception ex) {
+                    System.out.println("Exeption occur");
                     System.out.println(ex);
                 }
             }
@@ -209,14 +210,14 @@ public class Application_2 extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 Display();
                 C.show(P4,"Card_3");
-                 P6.add(new JLabel("Total amount to pay :- "+ Ss2),"South");
+                P6.add(new JLabel("Total amount to pay :- "+ Ss2),"South");
             }
         });
         B5.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Disp();
-              C.show(P4,"Card_4");
+                C.show(P4,"Card_4");
                 P10.add(new JLabel("Total Amount to pay :- " + Ss1));
             }
         });
@@ -250,17 +251,19 @@ public class Application_2 extends JFrame implements ActionListener {
         A.setDefaultCloseOperation(3);
     }
 
-     // Function to Display the Records of new Created table'
+    // Function to Display the Records of new Created table'
 
     void Display(){
         try{
             String SumSQL = "Select sum(Total_Amt)from " + JF1.getText() + ";";
             ResultSet set=stat.executeQuery( "Select * from "+JF1.getText()+";");
-            System.out.println();
+            //  System.out.println(set);
             JT2.setModel(DbUtils.resultSetToTableModel(set));
 
             ResultSet Set3 = stat.executeQuery(SumSQL);
-            while (Set3.next()) {
+
+            while (Set3.next())
+            {
                 Ss2 = Set3.getFloat(1);
             }
 
@@ -282,7 +285,7 @@ public class Application_2 extends JFrame implements ActionListener {
 
             ResultSet Set3 = stat.executeQuery(SumSQL);
             while (Set3.next()) {
-                 Ss1 = Set3.getFloat(1);
+                Ss1 = Set3.getFloat(1);
             }
         }
         catch(Exception Ex){
@@ -292,33 +295,33 @@ public class Application_2 extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-String S2=e.getActionCommand();
-if(S2.equals("Create")){
-    String CrSql="create table "+JF1.getText()+"(Date Varchar(30) NOT NULL,Items Varchar(30) NOT NULL,Size Varchar(30),SqFeet float(30),C_SqFeet float(30),Rate float(7.7) NOT NULL,C_Rate float(7.7) NOT NULL,QTY int(10) NOT NULL,Total_Amt Float(8.8) NOT NULL); ";
-    System.out.println(CrSql);
-    try {
-        stat.executeUpdate( CrSql);
-        JOptionPane.showMessageDialog(null, "Ready Table");
-        L1.add(JF1.getText());
-        C.show(P4,"Card_2");
-    }
-    catch (Exception E){
-        E.printStackTrace();
-    }
-}
-if(S2.equals("Delete")){
+        String S2=e.getActionCommand();
+        if(S2.equals("Create")){
+            String CrSql="create table "+JF1.getText()+"(Date Varchar(30) NOT NULL,Items Varchar(30) NOT NULL,Size Varchar(30),SqFeet Varchar(30),Rate float(7.7) NOT NULL,C_Rate float(7.7) NOT NULL,QTY int(10) NOT NULL,Total_Amt Float(8.8) NOT NULL); ";
+            System.out.println(CrSql);
+            try {
+                stat.executeUpdate( CrSql);
+                JOptionPane.showMessageDialog(null, "Ready Table");
+                L1.add(JF1.getText());
+                C.show(P4,"Card_2");
+            }
+            catch (Exception E){
+                E.printStackTrace();
+            }
+        }
+        if(S2.equals("Delete")){
 
-   String DrSQL="Drop table "+L1.getSelectedItem()+";";
-    try {
-        stat.executeUpdate( DrSQL);
-        JOptionPane.showMessageDialog(null, "Delete Table");
-        int X=L1.getSelectedIndex();
-        L1.remove(X);
-    }
-    catch (Exception E){
-        E.printStackTrace();
-    }
-}
+            String DrSQL="Drop table "+L1.getSelectedItem()+";";
+            try {
+                stat.executeUpdate( DrSQL);
+                JOptionPane.showMessageDialog(null, "Delete Table");
+                int X=L1.getSelectedIndex();
+                L1.remove(X);
+            }
+            catch (Exception E){
+                E.printStackTrace();
+            }
         }
     }
+}
 
